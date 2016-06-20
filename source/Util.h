@@ -18,7 +18,7 @@
  */
 
 /** Macro for reducing visibility of symbol names not indended to be exported. */
-#define HIDDEN __attribute__((visibility("hidden")))
+#define HIDDEN __attribute__((visibility("hidden"))) extern
 
 /** Macro for designating symbols as being unused to suppress compile warnings. */
 #define UNUSED __attribute__((unused))
