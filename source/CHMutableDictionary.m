@@ -23,7 +23,7 @@ void CHDictionaryRelease(CFAllocatorRef allocator, const void *value) {
 }
 
 CFStringRef CHDictionaryCopyDescription(const void *value) {
-	return (CFStringRef)[[(id)value description] copy];
+	return [(CFStringRef)[[(id)value description] copy] autorelease];
 }
 
 Boolean CHDictionaryEqual(const void *value1, const void *value2) {
@@ -104,7 +104,7 @@ HIDDEN void createCollectableCFMutableDictionary(CFMutableDictionaryRef* diction
 - (id) copyWithZone:(NSZone*) zone {
 	// We could use -initWithDictionary: here, but it would just use more memory.
 	// (It marshals key-value pairs into two id* arrays, then inits from those.)
-	CHMutableDictionary *copy = [[[self class] allocWithZone:zone] init];
+	CHMutableDictionary *copy = (CHMutableDictionary *)[[[self class] allocWithZone:zone] init];
 	[copy addEntriesFromDictionary:self];
 	return copy;
 }
@@ -126,7 +126,7 @@ HIDDEN void createCollectableCFMutableDictionary(CFMutableDictionaryRef* diction
 
 - (NSString*) debugDescription {
 	CFStringRef description = CFCopyDescription(dictionary);
-	CFRelease([(id)description retain]);
+	CFRelease([[(id)description retain] autorelease]);
 	return [(id)description autorelease];
 }
 

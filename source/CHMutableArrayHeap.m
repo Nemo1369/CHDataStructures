@@ -24,9 +24,9 @@
 		leftIndex = parentIndex * 2 + 1;
 		rightIndex = leftIndex + 1;
 		
-		parent = [array objectAtIndex:parentIndex];
-		leftChild = [array objectAtIndex:leftIndex];
-		rightChild = (rightIndex < count) ? [array objectAtIndex:rightIndex] : nil;
+		parent = array[parentIndex];
+		leftChild = array[leftIndex];
+		rightChild = (rightIndex < count) ? array[rightIndex] : nil;
 		// A binary heap is always a complete tree, so left will never be nil.
 		if (rightChild == nil || [leftChild compare:rightChild] == sortOrder) {
 			if ([parent compare:leftChild] != sortOrder) {
@@ -107,7 +107,7 @@
 #pragma mark <NSCopying>
 
 - (id) copyWithZone:(NSZone*)zone {
-	return [[[self class] allocWithZone:zone] initWithOrdering:sortOrder array:array];
+	return [(CHMutableArrayHeap *)[[self class] allocWithZone:zone] initWithOrdering:sortOrder array:array];
 }
 
 #pragma mark <NSFastEnumeration>
@@ -152,7 +152,7 @@
 	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
 	                                    initWithKey:nil
 	                                      ascending:(sortOrder == NSOrderedAscending)];
-	return [array sortedArrayUsingDescriptors:[NSArray arrayWithObject:[sortDescriptor autorelease]]];
+	return [array sortedArrayUsingDescriptors:@[[sortDescriptor autorelease]]];
 }
 
 /**
@@ -178,7 +178,7 @@
 }
 
 - (id) firstObject {
-	return ([array count] > 0) ? [array objectAtIndex:0] : nil;
+	return ([array count] > 0) ? array[0] : nil;
 }
 
 - (NSUInteger) hash {
@@ -198,7 +198,7 @@
 }
 
 - (id) objectAtIndex:(NSUInteger)index {
-	return [array objectAtIndex:index];
+	return array[index];
 }
 
 - (NSEnumerator*) objectEnumerator {
@@ -217,7 +217,7 @@
 	NSUInteger index = [array count] - 1;
 	while (index > 0) {
 		parentIndex = (index - 1) / 2;
-		if ([[array objectAtIndex:parentIndex] compare:anObject] != sortOrder) {
+		if ([array[parentIndex] compare:anObject] != sortOrder) {
 			[array exchangeObjectAtIndex:parentIndex withObjectAtIndex:index];
 			index = parentIndex;
 		}

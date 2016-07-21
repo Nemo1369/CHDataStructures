@@ -27,11 +27,11 @@ CFStringRef CHBinaryHeapDescription (const void *value) {
 }
 
 CFComparisonResult CHBinaryHeapCompareAscending (const void *value1, const void *value2, void *info) {
-	return [(id)value1 compare:(id)value2];
+	return (CFComparisonResult)[(id)value1 compare:(id)value2];
 }
 
 CFComparisonResult CHBinaryHeapCompareDescending (const void *value1, const void *value2, void *info) {
-	return [(id)value1 compare:(id)value2] * -1;
+	return (CFComparisonResult)([(id)value1 compare:(id)value2] * -1);
 }
 
 static const CFBinaryHeapCallBacks kCHBinaryHeapCallBacksAscending = {
@@ -106,7 +106,7 @@ static const CFBinaryHeapCallBacks kCHBinaryHeapCallBacksDescending = {
 }
 
 - (NSUInteger) count {
-	return CFBinaryHeapGetCount(heap);
+	return (NSUInteger)CFBinaryHeapGetCount(heap);
 }
 
 - (NSString*) description {
@@ -115,7 +115,7 @@ static const CFBinaryHeapCallBacks kCHBinaryHeapCallBacksDescending = {
 
 - (NSString*) debugDescription {
 	CFStringRef description = CFCopyDescription(heap);
-	CFRelease([(id)description retain]);
+	CFRelease([[(id)description retain] autorelease]);
 	return [(id)description autorelease];
 }
 

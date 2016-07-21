@@ -95,7 +95,7 @@
 		CHNilArgumentException([self class], _cmd);
 	if ([indexes count] == 0)
 		return [[self class] dictionary];
-	CHOrderedDictionary* newDictionary = [[self class] dictionaryWithCapacity:[indexes count]];
+	CHOrderedDictionary* newDictionary = (CHOrderedDictionary *)[[self class] dictionaryWithCapacity:[indexes count]];
 	NSUInteger index = [indexes firstIndex];
 	while (index != NSNotFound) {
 		id key = [self keyAtIndex:index];

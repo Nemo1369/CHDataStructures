@@ -217,7 +217,7 @@ do { \
 #pragma mark <NSCopying>
 
 - (id) copyWithZone:(NSZone*)zone {
-	return [[[self class] allocWithZone:zone] initWithArray:[self allObjects]];
+	return [(CHCircularBuffer *)[[self class] allocWithZone:zone] initWithArray:[self allObjects]];
 }
 
 #pragma mark <NSFastEnumeration>
@@ -390,7 +390,7 @@ do { \
 		CHIndexOutOfRangeException([self class], _cmd, index, count);
 	if (anObject == nil)
 		CHNilArgumentException([self class], _cmd);
-	[anObject retain];
+	[[anObject retain] autorelease];
 	if (count == 0 || index == count) {
 		// To append, just move the tail forward one slot (wrapping if needed)
 		array[tailIndex] = anObject;
@@ -581,7 +581,7 @@ do { \
 - (void) replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject {
 	if (index >= count)
 		CHIndexOutOfRangeException([self class], _cmd, index, count);
-	[anObject retain];
+	[[anObject retain] autorelease];
 	[array[transformIndex(index)] release];
 	array[transformIndex(index)] = anObject;
 }

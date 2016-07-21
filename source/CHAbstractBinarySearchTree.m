@@ -153,7 +153,7 @@ static CHSearchTreeHeaderObject *headerObject = nil;
 {
 	if ((self = [super init]) == nil || !isValidTraversalOrder(order)) return nil;
 	traversalOrder = order;
-	searchTree = (root != sentinel) ? [tree retain] : nil;
+	searchTree = (id<CHSearchTree>)((root != sentinel) ? [tree retain] : nil);
 	if (traversalOrder == CHTraverseLevelOrder) {
 		CHBinaryTreeQueue_INIT();
 		CHBinaryTreeQueue_ENQUEUE(root);
@@ -348,11 +348,11 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 #pragma mark <NSCopying> methods
 
 - (id) copyWithZone:(NSZone*)zone {
-	id<CHSearchTree> newTree = [[[self class] allocWithZone:zone] init];
+	id<CHSearchTree> newTree = (id<CHSearchTree>)[[[self class] allocWithZone:zone] init];
 	// No point in using fast enumeration here until rdar://6296108 is addressed.
 	NSEnumerator *e = [self objectEnumeratorWithTraversalOrder:CHTraverseLevelOrder];
 	id anObject;
-	while (anObject = [e nextObject]) {
+	while ((anObject = [e nextObject])) {
 		[newTree addObject:anObject];
 	}
 	return newTree;
@@ -487,7 +487,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 	sentinel->object = anObject; // Make sure the target value is always "found"
 	CHBinaryTreeNode *current = header->right;
 	NSComparisonResult comparison;
-	while (comparison = [current->object compare:anObject]) // while not equal
+	while ((comparison = [current->object compare:anObject])) // while not equal
 		current = current->link[comparison == NSOrderedAscending]; // R on YES
 	return (current != sentinel) ? current->object : nil;
 }
@@ -519,7 +519,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 	CHBinaryTreeStack_PUSH(header->right);
 	
 	CHBinaryTreeNode *current;
-	while (current = CHBinaryTreeStack_POP()) {
+	while ((current = CHBinaryTreeStack_POP())) {
 		if (current->right != sentinel)
 			CHBinaryTreeStack_PUSH(current->right);
 		if (current->left != sentinel)
@@ -550,7 +550,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 	NSMutableSet *set = [NSMutableSet new];
 	NSEnumerator *e = [self objectEnumeratorWithTraversalOrder:CHTraversePreOrder];
 	id anObject;
-	while (anObject = [e nextObject]) {
+	while ((anObject = [e nextObject])) {
 		[set addObject:anObject];
 	}
 	return [set autorelease];
@@ -573,7 +573,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 	if (start == nil && end == nil)
 		return [[self copy] autorelease];
 	
-	id<CHSortedSet> subset = [[[[self class] alloc] init] autorelease];
+	id<CHSortedSet> subset = (id<CHSortedSet>)[[[[self class] alloc] init] autorelease];
 	if (count == 0)
 		return subset;
 	
@@ -633,7 +633,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 
 - (NSString*) debugDescription {
 	NSMutableString *description = [NSMutableString stringWithFormat:
-	                                @"<%@: 0x%p> = {\n", [self class], self];
+	                                @"<%@: 0x%@> = {\n", [self class], self];
 	CHBinaryTreeNode *current;
 	CHBinaryTreeStack_DECLARE();
 	CHBinaryTreeStack_INIT();
@@ -641,7 +641,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 	sentinel->object = nil;
 	if (header->right != sentinel)
 		CHBinaryTreeStack_PUSH(header->right);	
-	while (current = CHBinaryTreeStack_POP()) {
+	while ((current = CHBinaryTreeStack_POP())) {
 		if (current->right != sentinel)
 			CHBinaryTreeStack_PUSH(current->right);
 		if (current->left != sentinel)
@@ -677,7 +677,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 		CHBinaryTreeStack_INIT();
 		CHBinaryTreeStack_PUSH(header->right);
 		// Uses a reverse pre-order traversal to make the DOT output look right.
-		while (current = CHBinaryTreeStack_POP()) {
+		while ((current = CHBinaryTreeStack_POP())) {
 			if (current->left != sentinel)
 				CHBinaryTreeStack_PUSH(current->left);
 			if (current->right != sentinel)
@@ -686,10 +686,10 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 			[graph appendString:[self dotGraphStringForNode:current]];
 			// Append entry for edges from current node to both its children.
 			leftChild = (current->left->object == nil)
-				? [NSString stringWithFormat:@"nil%lu", ++sentinelCount]
+				? [NSString stringWithFormat:@"nil%u", ++sentinelCount]
 				: [NSString stringWithFormat:@"\"%@\"", current->left->object];
 			rightChild = (current->right->object == nil)
-				? [NSString stringWithFormat:@"nil%lu", ++sentinelCount]
+				? [NSString stringWithFormat:@"nil%u", ++sentinelCount]
 				: [NSString stringWithFormat:@"\"%@\"", current->right->object];
 			[graph appendFormat:@"  \"%@\" -> {%@;%@};\n",
 			                    current->object, leftChild, rightChild];
@@ -698,7 +698,7 @@ CHBinaryTreeNode* CHCreateBinaryTreeNodeWithObject(id anObject) {
 		
 		// Create entry for each null leaf node (each nil is modeled separately)
 		for (NSUInteger i = 1; i <= sentinelCount; i++)
-			[graph appendFormat:@"  nil%lu [shape=point,fillcolor=black];\n", i];
+			[graph appendFormat:@"  nil%u [shape=point,fillcolor=black];\n", i];
 	}
 	// Terminate the graph string, then return it
 	[graph appendString:@"}\n"];

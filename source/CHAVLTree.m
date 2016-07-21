@@ -64,7 +64,7 @@ static inline void adjustBalance(CHBinaryTreeNode *root, u_int32_t dir, int32_t 
 	
 	sentinel->object = anObject; // Assure that we find a spot to insert
 	NSComparisonResult comparison;
-	while (comparison = [current->object compare:anObject]) {
+	while ((comparison = [current->object compare:anObject])) {
 		CHBinaryTreeStack_PUSH(current);
 		if (current == header)
 			save = current->right;
@@ -74,7 +74,7 @@ static inline void adjustBalance(CHBinaryTreeNode *root, u_int32_t dir, int32_t 
 	}
 	NSAssert(save != nil, @"Illegal state, save should never be nil!");
 	
-	[anObject retain]; // Must retain whether replacing value or adding new node
+	[[anObject retain] autorelease]; // Must retain whether replacing value or adding new node
 	if (current != sentinel) {
 		// Replace the existing object with the new object.
 		[current->object release];
@@ -112,10 +112,10 @@ static inline void adjustBalance(CHBinaryTreeNode *root, u_int32_t dir, int32_t 
 				int32_t bal = (isRightChild) ? +1 : -1;
 				if (node->balance == bal) {
 					parent->balance = node->balance = 0;
-					parent = singleRotation(parent, !isRightChild);
+					parent = singleRotation(parent, (u_int32_t)!isRightChild);
 				} else { // node->balance == -bal
-					adjustBalance(parent, isRightChild, bal);
-					parent = doubleRotation(parent, !isRightChild);
+					adjustBalance(parent, (u_int32_t)isRightChild, bal);
+					parent = doubleRotation(parent, (u_int32_t)!isRightChild);
 				}
 			}
 			keepBalancing = NO;
@@ -144,7 +144,7 @@ done:
 	sentinel->object = anObject; // Assure that we stop at a leaf if not found.
 	NSComparisonResult comparison;
 	// Search down the node for the tree and save the path
-	while (comparison = [current->object compare:anObject]) {
+	while ((comparison = [current->object compare:anObject])) {
 		CHBinaryTreeStack_PUSH(current);
 		current = current->link[comparison == NSOrderedAscending]; // R on YES
 	}
@@ -195,16 +195,16 @@ done:
 			int32_t bal = (isRightChild) ? +1 : -1;
 			if (node->balance == -bal) {
 				parent->balance = node->balance = 0;
-				parent = singleRotation(parent, isRightChild);
+				parent = singleRotation(parent, (u_int32_t)isRightChild);
 			}
 			else if (node->balance == bal) {
-				adjustBalance(parent, !isRightChild, -bal);
-				parent = doubleRotation(parent, isRightChild);
+				adjustBalance(parent, (u_int32_t)!isRightChild, -bal);
+				parent = doubleRotation(parent, (u_int32_t)isRightChild);
 			}
 			else { // node->balance == 0
 				parent->balance = -bal;
 				node->balance = bal;
-				parent = singleRotation(parent, isRightChild);
+				parent = singleRotation(parent, (u_int32_t)isRightChild);
 				done = YES;
 			}
 			comparison = [CHBinaryTreeStack_TOP->object compare:parent->object];

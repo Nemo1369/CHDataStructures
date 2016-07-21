@@ -51,12 +51,12 @@
 	
 	sentinel->object = anObject; // Assure that we find a spot to insert
 	NSComparisonResult comparison;
-	while (comparison = [current->object compare:anObject]) {
+	while ((comparison = [current->object compare:anObject])) {
 		CHBinaryTreeStack_PUSH(current);
 		current = current->link[comparison == NSOrderedAscending]; // R on YES
 	}
 	
-	[anObject retain]; // Must retain whether replacing value or adding new node
+	[[anObject retain] autorelease]; // Must retain whether replacing value or adding new node
 	if (current != sentinel) {
 		// Replace the existing object with the new object.
 		[current->object release];
@@ -102,7 +102,7 @@ done:
 	
 	sentinel->object = anObject; // Assure that we stop at a leaf if not found.
 	NSComparisonResult comparison;
-	while (comparison = [current->object compare:anObject]) {
+	while ((comparison = [current->object compare:anObject])) {
 		CHBinaryTreeStack_PUSH(current);
 		current = current->link[comparison == NSOrderedAscending]; // R on YES
 	}

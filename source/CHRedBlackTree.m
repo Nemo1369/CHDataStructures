@@ -84,7 +84,7 @@ static inline CHBinaryTreeNode* doubleRotation(CHBinaryTreeNode *node, BOOL goin
 	
 	sentinel->object = anObject;
 	NSComparisonResult comparison;
-	while (comparison = [current->object compare:anObject]) {
+	while ((comparison = [current->object compare:anObject])) {
 		greatgrandparent = grandparent, grandparent = parent, parent = current;
 		current = current->link[comparison == NSOrderedAscending];
 		
@@ -111,7 +111,7 @@ static inline CHBinaryTreeNode* doubleRotation(CHBinaryTreeNode *node, BOOL goin
 		}
 	}
 	
-	[anObject retain];
+	[[anObject retain] autorelease];
 	if (current != sentinel) {
 		// If an existing node matched, simply replace the existing value.
 		[current->object release];

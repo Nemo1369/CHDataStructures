@@ -85,7 +85,7 @@
 		CHNilArgumentException([self class], _cmd);
 	if ([indexes count] == 0)
 		return [[self class] set];
-	CHOrderedSet* newSet = [[self class] setWithCapacity:[indexes count]];
+	CHOrderedSet* newSet = (CHOrderedSet *)[[self class] setWithCapacity:[indexes count]];
 	NSUInteger index = [indexes firstIndex];
 	while (index != NSNotFound) {
 		[newSet addObject:[ordering objectAtIndex:index]];

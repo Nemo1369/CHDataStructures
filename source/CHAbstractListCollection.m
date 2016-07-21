@@ -33,7 +33,7 @@
 
 - (id) initWithCoder:(NSCoder*)decoder {
 	if ((self = [super init]) == nil) return nil;
-	list = [[decoder decodeObjectForKey:@"list"] retain];
+	list = (id<CHLinkedList>)[[decoder decodeObjectForKey:@"list"] retain];
 	return self;
 }
 

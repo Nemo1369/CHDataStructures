@@ -13,7 +13,7 @@
 #import "CHMutableSet.h"
 
 const void* CHMutableSetRetain(CFAllocatorRef allocator, const void *value) {
-	return [(id)value retain];
+	return [[(id)value retain] autorelease];
 }
 
 void CHMutableSetRelease(CFAllocatorRef allocator, const void *value) {
@@ -95,7 +95,7 @@ static const CFSetCallBacks kCHMutableSetCallbacks = {
 
 - (NSString*) debugDescription {
 	CFStringRef description = CFCopyDescription(set);
-	CFRelease([(id)description retain]);
+	CFRelease([[(id)description retain] autorelease]);
 	return [(id)description autorelease];
 }
 
@@ -128,7 +128,7 @@ static const CFSetCallBacks kCHMutableSetCallbacks = {
 #pragma mark <NSCopying>
 
 - (id) copyWithZone:(NSZone*)zone {
-	CHMutableSet *copy = [[[self class] allocWithZone:zone] init];
+	CHMutableSet *copy = (CHMutableSet *)[[[self class] allocWithZone:zone] init];
 	[copy addObjectsFromArray:[self allObjects]];
 	return copy;
 }
